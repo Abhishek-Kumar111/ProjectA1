@@ -1,0 +1,255 @@
+body{
+    font-family: "Plus Jakarta Sans",sans-serif !important;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    height: 100%;
+}
+
+.navbar{
+    height: 4rem;
+    background-color: white;
+}
+.nav-link{
+    color: #222222 !important;
+}
+/* footer */
+
+.f-info-links a {
+    text-decoration: none;
+    color: #222222;
+}
+.f-info-links a:hover {
+    text-decoration: underline;
+    
+}
+.f-info{
+    text-align: center;
+    display: flex;
+    height: 8rem;
+    background-color: #ebebeb;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+
+}
+.f-info-links,.f-info-socials,f-info-brand{
+    width: 100%;
+    vertical-align: middle;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+.f-info-socials i{
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+/* for index.ejs(image) */
+.content {
+    flex: 1;  /* Pushes footer down */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.card {
+    width: 30%; 
+    margin-bottom: 20px;
+}
+
+.card img {
+    height: 200px; 
+    width: 100%; 
+    object-fit: cover;
+}
+
+.card-img-overlay{
+    opacity: 0;
+}
+.card-img-overlay:hover{
+    opacity: 0.2;
+    background-color: #ebebeb;
+}
+
+
+bdy {
+    background-color: #f7f7f7;
+    padding: 20px;
+}
+
+.form-container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.form-control {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.btn-dark {
+    background-color: #333;
+    border-color: #333;
+}
+
+.btn-dark:hover {
+    background-color: #555;
+    border-color: #555;
+}
+
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-row .col-md-4, 
+    .form-row .col-md-8 {
+        width: 100%;
+    }
+}
+
+/* for show page styling  */
+
+.listing-page {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+body {
+    margin: 0;                  
+    padding: 0;                
+}
+
+.review-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.review-card {
+    width: calc(50% - 10px);   
+    margin-bottom: 20px;      
+    padding: 15px;              
+    border: 1px solid #ccc;     
+    border-radius: 5px;         
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+.review-card h5 {
+    margin: 0;                 
+}
+
+.review-comment {
+    max-height: 100px;          
+    overflow-y: auto;          
+    word-wrap: break-word;     
+    white-space: pre-wrap;     
+    margin: 0;                  
+}
+
+
+
+.property-details {
+    display: flex;
+    gap: 40px;
+}
+
+.property-images img {
+    width: 350px;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+.property-info {
+    max-width: 500px;
+}
+
+.property-info h1 {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.location {
+    color: #888;
+    margin-bottom: 10px;
+}
+
+.price {
+    font-size: 24px;
+    color: #ff5a5f;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.description {
+    margin-bottom: 20px;
+}
+
+.edit-link,
+.delete-form button {
+    background-color: #ff5a5f;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+.edit-link{
+    background-color: #222222 !important;
+}
+
+.edit-link:hover,
+.delete-form button:hover {
+    background-color: #e04848;
+}
+
+.row{
+    line-height: 0.2;
+}
+.fa-star{
+    color: yellow;
+}
+
+/* map */
+#map { 
+    
+    width: 500px;
+    height: 400px;
+ }

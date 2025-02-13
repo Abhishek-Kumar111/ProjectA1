@@ -1,0 +1,70 @@
+<% layout('/layouts/boilerplate') -%>
+
+<body>
+
+    <div class="form-container">
+        <h3>Edit Your Listing</h3>
+        <form method="post" novalidate class="needs-validation" action="/listings/<%=list._id%>?_method=PATCH" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title:</label>
+                <input type="text" id="title" name="Listing[title]" value="<%=list.title%>" required class="form-control">
+                <div class="invalid-feedback">
+                    price give valid tittle!
+                 </div>
+                 <div class="valid-feedback">
+                    looks good!
+                 </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="description" class="form-label">Description:</label>
+                <textarea id="description" name="Listing[description]" required class="form-control" rows="4"><%=list.description%></textarea>
+                <div class="invalid-feedback">
+                    Please add valid descripation!
+                 </div>
+            </div>
+
+            <!-- Responsive layout for price and country -->
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label for="price" class="form-label">Price:</label>
+                    <input id="price" name="Listing[price]" value="<%=list.price%>" required class="form-control">
+                    <div class="invalid-feedback">
+                        price should be valid!
+                     </div>
+                </div>
+    
+                <div class="col-md-8 mb-3">
+                    <label for="country" class="form-label">Country:</label>
+                    <input type="text" id="country" name="Listing[country]" value="<%=list.country%>" required class="form-control">
+                    <div class="invalid-feedback">
+                        country name should be valid!
+                     </div>
+                </div>
+            </div>
+            
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h6 class="card-title">listing image: </h6>
+                  <img src="<%= updatedurl%>" alt="original_image" class="card-img-top">
+                </div>
+              </div>
+            <div class="mb-3">
+                <label for="url" class="form-label">Image URL:</label>
+                <input type="file" id="url" name="Listing[url]" value="<%=list.image.url%>"  class="form-control">
+                
+            </div>
+
+            <div class="mb-3">
+                <label for="location" class="form-label">Location:</label>
+                <input type="text" id="location" name="Listing[location]" value="<%=list.location%>" required class="form-control">
+                <div class="invalid-feedback">
+                    location should be valid!
+                 </div>
+            </div>
+
+            <button type="submit" class="btn btn-dark w-100">Edit</button>
+        </form>
+    </div>
+
+</body>

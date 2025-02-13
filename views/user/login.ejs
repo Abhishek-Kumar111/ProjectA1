@@ -1,0 +1,23 @@
+<% layout('/layouts/boilerplate') -%>
+<div class="form-container bdy">
+    <h2>wonderlust singup!</h2>
+    <form method="post" novalidate class="needs-validation" action="/login">
+        <div class="mb-3">
+            <label for="username" class="form-label">username:</label>
+            <input type="text" id="username" name="username"  placeholder="Enter name" required class="form-control">
+        
+        </div>
+
+        <div class="mb-3">
+
+            <div class="mb-3">
+                <label for="password" class="form-label">password:</label>
+                <input type="password" id="password" name="password" placeholder="Enter password" required class="form-control">
+                
+            </div>
+        </div>
+        <button type="submit" class="btn btn-dark w-100">login</button>
+    </form>
+</div>
+
+
