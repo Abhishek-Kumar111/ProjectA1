@@ -12,6 +12,7 @@
       ✅ Responsive Design - Optimized for desktop
 
 🛠️ Tech Stack
+<<<<<<< HEAD
 
       Technology :	Usage
       Frontend   :	EJS, Bootstrap, CSS
@@ -20,6 +21,15 @@
       Authentication :Passport.js (Local Strategy)
       Cloud Storage  :Cloudinary
       Session Handling :	Express-Session, Connect-Mongo
+=======
+Technology -	Usage
+Frontend   :	EJS, Bootstrap, CSS
+Backend	   :    Node.js, Express.js
+Database   : 	MongoDB, Mongoose
+Authentication :Passport.js (Local Strategy)
+Cloud Storage  :Cloudinary
+Session Handling :	Express-Session, Connect-Mongo
+>>>>>>> 5428909 (Fixed dependency issues)
 
 🚀 Installation & Setup
 
