@@ -9,6 +9,8 @@ const path = require("path");
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const wrapAsync = require("./utils/wrapAsync.js");
+const ExpressError = require('./utils/ExpressError');
+
 
 //controller
 const listingController = require("./controller/listing.js");
