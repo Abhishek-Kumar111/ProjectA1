@@ -11,7 +11,8 @@ module.exports.index = async (req, res, next) => {
 };
 
 module.exports.renderNewForm = (req, res) => {
-    res.render("listings/new.ejs");
+     res.render("listings/new.ejs");
+    
 }
 
 module.exports.saveNewListing = async (req, res, next) => {
@@ -39,7 +40,7 @@ module.exports.saveNewListing = async (req, res, next) => {
     let savedList = await newList.save();
     console.log(savedList);
     req.flash("success", "New Listing Created");
-    res.redirect("/listing");
+    res.redirect("/listings");
     
 }
 
@@ -48,7 +49,7 @@ module.exports.showListing = async (req, res) => {
     const list = await Listing.findById(id).populate({ path: "reviews", populate: { path: "author" } }).populate("owner");
     if (!list) {
         req.flash("error", "listing you requested doesn't exist!");
-        res.redirect("/listing");
+        res.redirect("/listings");
     }
     res.render("./listings/shows.ejs", { list });
 }
@@ -58,7 +59,7 @@ module.exports.editForm = async (req, res) => {
     let list = await Listing.findById(id);
     if (!list) {
         req.flash("error", "listing you requested doesn't exist!");
-        res.redirect("/listing");
+        res.redirect("/listings");
     }
     let orgImageUrl = list.image.url;
     let updatedurl = orgImageUrl.replace("/upload","/upload/e_grayscale/w_250");
@@ -84,7 +85,7 @@ module.exports.deleteListing =  async (req, res) => {
     let { id } = req.params;
     await Listing.findByIdAndDelete(id);
     req.flash("success", "Listing Deleted");
-    res.redirect("/listing");
+    res.redirect("/listings");
 }
 
 module.exports.randomPath = (req, res, next) => {

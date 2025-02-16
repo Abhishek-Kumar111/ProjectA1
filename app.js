@@ -1,5 +1,5 @@
 if(process.env.NODE_ENV != "producation"){
-     require('dotenv').config();
+    require('dotenv').config();
 }
 console.log(process.env); 
 
@@ -24,61 +24,59 @@ const { isLoggedIn, isOwner, validateReviews, validateListing ,isReviewAuthor} =
 engine = require("ejs-mate");
 app.engine("ejs", engine);
 
-//for image uppload
+//for image upload
 const multer  = require('multer');
-
-const {storage} = require("./cloudConfig.js");
-const upload = multer({ storage});                
+const { storage } = require("./cloudConfig.js");
+const upload = multer({ storage });                
 
 //use of static file(css)
 app.use(express.static(path.join(__dirname, "PUBLIC")));
 app.set("view engine", "ejs");
-
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
-
 app.use(methodOverride('_method'));
 
 const dbURL = process.env.ATLASDB_URL;
 
-
 main()
-    .then(() => {
-        console.log("Connected to MongoDB");
-    })
-    .catch(err => console.log(err));
+   .then(() => {
+       console.log("Connected to MongoDB");
+   })
+   .catch(err => console.log(err));
 
 async function main() {
-        await mongoose.connect(dbURL)
-        .then(() => console.log("Database connection successful"))
-        .catch((err) => console.error("Database connection error:", err));
-      
-       
-   }    
+       await mongoose.connect(dbURL)
+       .then(() => console.log("Database connection successful"))
+       .catch((err) => console.error("Database connection error:", err));
+  }    
+
 //session 
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const flash = require('connect-flash');
+
 const store = MongoStore.create({
-    mongoUrl: dbURL,
-    crypto:{
-        secret: process.env.SECRET,
-    },
-    touchAfter: 24*3600,
+   mongoUrl: dbURL,
+   crypto:{
+       secret: process.env.SECRET,
+   },
+   touchAfter: 24*3600,
 });
+
 store.on("error", () => {
-    console.log("error in mongo");
+   console.log("error in mongo");
 });
+
 const sessionOptions = {
-    store,
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-    },
+   store,
+   secret: process.env.SECRET,
+   resave: false,
+   saveUninitialized: true,
+   cookie: {
+       expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
+       maxAge: 7 * 24 * 60 * 60 * 1000,
+       httpOnly: true,
+   },
 };
 
 app.use(session(sessionOptions));
@@ -90,59 +88,49 @@ app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
 app.use((req, res, next) => {
-    res.locals.success = req.flash("success") || [];
-    res.locals.error = req.flash("error") || [];
-    res.locals.currUser = req.user;
-    next();
+   res.locals.success = req.flash("success") || [];
+   res.locals.error = req.flash("error") || [];
+   res.locals.currUser = req.user;
+   next();
 });
 
-
-//pasport route
+//passport route
 const userRouter = require("./routes/user.js");
 app.use("/", userRouter);
 
-//home route
+//  Home Route
 // app.get("/", (req, res) => {
-//     res.send("This is home route");
+//    res.render("home.ejs"); 
 // });
 
-// Index routing
-app.get("/listing",wrapAsync(listingController.index));
-
-// adding new 
-app.get("/listing/new",isLoggedIn, listingController.renderNewForm);
-app.post("/listings",isLoggedIn, validateListing,upload.single('Listing[image]'), wrapAsync(listingController.saveNewListing));
-
-//show rout
+// Listings Routes
+app.get("/listings", wrapAsync(listingController.index)); 
+app.get("/listings/new", isLoggedIn, listingController.renderNewForm);
+app.post("/listings", isLoggedIn, validateListing, upload.single('Listing[image]'), wrapAsync(listingController.saveNewListing));
 app.get("/listings/:id", wrapAsync(listingController.showListing));
-
-//edit list
 app.get("/listings/:id/edit", isLoggedIn, wrapAsync(listingController.editForm));
+app.patch("/listings/:id", isLoggedIn, isOwner, upload.single('Listing[image]'), wrapAsync(listingController.updateListing));
+app.delete("/listings/:id", isLoggedIn, isOwner, wrapAsync(listingController.deleteListing));
 
-//update 
-app.patch("/listings/:id", isLoggedIn, isOwner,upload.single('Listing[image]'), wrapAsync(listingController.updateListing));
-
-//Delete
-app.delete("/listings/:id", isLoggedIn, isOwner,wrapAsync(listingController.deleteListing));
-
-//Reviews
+// Reviews Routes
 app.post("/listings/:id/reviews", isLoggedIn, validateReviews, wrapAsync(reviewsController.reviewListing));
+app.delete("/listings/:id/reviews/:revId", isLoggedIn, isReviewAuthor, wrapAsync(reviewsController.deleteReview));
 
-//reviews deletes
-app.delete("/listings/:id/reviews/:revId", isLoggedIn,isReviewAuthor, wrapAsync(reviewsController.deleteReview));
+// Fixed Catch-All Route (404 Handler)
+app.all("*", (req, res, next) => {
+   next(new ExpressError(404, "Page not found!"));
+});
 
-//for all randam path
-app.use("*", listingController.randomPath);
-
-// Error handler 
+// Proper Error Handling Middleware
 app.use((err, req, res, next) => {
-    const { statusCode = 500 } = err;
-    res.status(statusCode).render("error.ejs", { err });
+   const { statusCode = 500 } = err;
+   res.status(statusCode).render("error.ejs", { err });
 });
 
-const PORT = process.env.PORT || 8080; // Use Render's port if available
+// Correct Port Configuration
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`App is listening on port ${PORT}`);
+   console.log(`App is listening on port ${PORT}`);
 });
-
