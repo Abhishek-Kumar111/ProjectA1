@@ -104,7 +104,7 @@ app.use("/", userRouter);
 
 //  Home Route
 app.get("/", (req, res) => {
-   res.send("this is home route"); 
+   res.render("home.ejs"); 
 });
 
 // Listings Routes
