@@ -103,9 +103,9 @@ const userRouter = require("./routes/user.js");
 app.use("/", userRouter);
 
 //  Home Route
-// app.get("/", (req, res) => {
-//    res.render("home.ejs"); 
-// });
+app.get("/", (req, res) => {
+   res.render("home.ejs"); 
+});
 
 // Listings Routes
 app.get("/listings", wrapAsync(listingController.index)); 
