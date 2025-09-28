@@ -1,0 +1,208 @@
+<% layout('/layouts/boilerplate') -%>
+
+    <script>
+        const list = <%- JSON.stringify(list) %>;
+           
+    </script>
+    
+    <link rel="stylesheet" href="/flatpickr/dist/flatpickr.min.css">
+    <main class="booking-page">
+
+        <% if (currUser) { %>
+
+            <% const myBookings=list.bookings.filter(b=>
+                b.userId && b.userId.toString() === currUser._id.toString()
+                ); %>
+
+
+                <% if (myBookings.length> 0) { %>
+                    <h5>Your Bookings for this Listing</h5>
+                    <section class="my-bookings" style="margin-bottom:20px;">
+                        <p>My Bookings
+                        <p>
+                        <table class="price-table" border="1"
+                            style="width:100%; border-collapse:collapse; text-align:center; justify-content: center;">
+                            <thead>
+                                <tr>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Night</th>
+                                    <th>Action</th>
+                                    </tr>
+                            </thead>
+                            <tbody>
+                                <% myBookings .forEach(b=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= b.checkIn.toDateString() %>
+                                        </td>
+                                        <td>
+                                            <%= b.checkOut.toDateString() %>
+                                        </td>
+                                        <td>
+                                            <%= Math.ceil((b.checkOut - b.checkIn) / (1000 * 60 * 60 * 24)) %>
+                                        </td>
+                                        <td>
+                                            <form action="/listings/<%= list._id %>/booking/<%= b._id %>?_method=DELETE"
+                                                method="POST">
+                                                <button type="submit" class="circular-btn"><i
+                                                        class="fa-solid fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </section>
+                    <% } else { %>
+                        <p style="color: gray;">You don’t have any bookings yet.</p>
+                        <% } %>
+                            <% } %>
+
+
+                                <!-- Booking Box -->
+                                <h4 style="margin-bottom:15px;">Book your stay</h4>
+                                <form action="/listings/<%=list._id%>/booking" id="bookingForm" method="post">
+                                    <div class="booking-box"
+                                        style="border:1px solid #ccc; padding:15px; border-radius:8px; margin-top:15px; display: flex; justify-content:space-between;">
+
+
+                                        <div style="display:flex; gap:10px; margin-bottom:10px;">
+                                            <div style="flex:1;">
+                                                <label for="checkIn"
+                                                    style="font-size:14px; font-weight:bold;">Check-in</label>
+                                                <input type="text" name="checkIn" id="checkIn" placeholder="Add date"
+                                                    class="form-control">
+                                            </div>
+                                            <div style="flex:1;">
+                                                <label for="checkOut"
+                                                    style="font-size:14px; font-weight:bold;">Check-out</label>
+                                                <input type="text" name="checkOut" id="checkOut" placeholder="Add date"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+
+                                        <div style="display:flex; gap:10px; margin-bottom:15px;">
+                                            <div style="flex:1;">
+                                                <label for="guests"
+                                                    style="font-size:14px; font-weight:bold;">Guests</label>
+                                                <input type="number" id="guests"name="guests" min="1" max="5" value="1"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 2. Home Information -->
+                                    <section class="home-info">
+                                        <img src="<%= list.image.url %>" alt="Home Image" class="home-image">
+                                        <div class="home-text">
+                                            <h2>Modern villa in forest scenery of luxury house by mountain river</h2>
+                                            <p>Owned by <i>Owner Name</i></p>
+                                        </div>
+                                    </section>
+
+                                    <!-- 3. Price Details Section -->
+
+                                    <!-- 3. Price Details Section -->
+                                    <section class="price-details">
+                                        <h2>Your Total Price</h2>
+                                        <table class="price-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Description</th>
+                                                    <th>Amount (₹)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td id="price-nights">0 night x ₹ <%=
+                                                            list.price.toLocaleString('en-IN') %>
+                                                    </td>
+                                                    <td id="price-base">₹0</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Taxes 18%</td>
+                                                    <td id="price-tax">₹0</td>
+                                                </tr>
+                                                <tr class="total-row">
+                                                    <td>Total (INR)</td>
+                                                    <td id="price-total">₹0</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </section>
+
+
+                                    <button class="btn-primary" type="submit">
+                                        Confirm
+                                    </button>
+                        
+                                </form>
+    </main>
+
+    <!-- Flatpickr JS -->
+    <script src="/flatpickr/dist/flatpickr.min.js"></script>
+    <script>
+        const pricePerNight = <%= list.price%>;
+
+        function calculatePrice() {
+            const checkIn = document.getElementById("checkIn").value;
+            const checkOut = document.getElementById("checkOut").value;
+
+            if (checkIn && checkOut) {
+                const inDate = new Date(checkIn);
+                const outDate = new Date(checkOut);
+
+                // Calculate number of nights
+                const diffTime = outDate - inDate;
+                const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                if (nights > 0) {
+                    const basePrice = nights * pricePerNight;
+                    const tax = basePrice * 0.18;
+                    const total = basePrice + tax;
+
+                    // Update DOM
+                    document.getElementById("price-nights").innerText =
+                        `${nights} night x ₹ ${pricePerNight.toLocaleString('en-IN')}`;
+                    document.getElementById("price-base").innerText =
+                        `₹${basePrice.toLocaleString('en-IN')}`;
+                    document.getElementById("price-tax").innerText =
+                        `₹${tax.toLocaleString('en-IN')}`;
+                    document.getElementById("price-total").innerText =
+                        `₹${total.toLocaleString('en-IN')}`;
+                }
+            }
+        }
+
+        // Recalculate whenever dates change
+        document.getElementById("checkIn").addEventListener("change", calculatePrice);
+        document.getElementById("checkOut").addEventListener("change", calculatePrice);
+
+        const bookedRanges = <%- JSON.stringify(list.bookings.map(b => {
+            const from = new Date(b.checkIn);
+            const to = new Date(b.checkOut);
+
+            // Subtract one day from checkout to make it exclusive
+            to.setDate(to.getDate() - 1);
+
+            // Important: set hours to 0 to avoid timezone issues
+            from.setHours(0, 0, 0, 0);
+            to.setHours(0, 0, 0, 0);
+
+            return { from, to };
+        })) %>;
+
+
+        flatpickr("#checkIn", {
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            disable: bookedRanges
+        });
+
+        flatpickr("#checkOut", {
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            disable: bookedRanges
+        });
+    </script>

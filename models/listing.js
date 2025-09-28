@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const User = require("./user.js");
 const Review = require("./reviews.js");
+const Booking = require("./booking.js");
 const Schema = mongoose.Schema;
 
 const listingSchema = new Schema({
@@ -42,6 +43,12 @@ const listingSchema = new Schema({
           required: true
         },
       },
+      bookings: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Booking"
+        }
+    ]
     
 
 });

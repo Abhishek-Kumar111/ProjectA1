@@ -1,8 +1,8 @@
 const passport = require("passport");
 const ExpressError = require("./utils/ExpressError.js");
 const { listingSerSchema, listingReview} = require("./ListingSerSchema.js");
-const Listing = require("./Model/listing.js");
-const Review = require("./Model/reviews.js");
+const Listing = require("./models/listing.js");
+const Review = require("./models/reviews.js");
 module.exports.isLoggedIn = (req,res,next)=>{
     if(!req.isAuthenticated()){
         req.session.redirectUrl = req.originalUrl;

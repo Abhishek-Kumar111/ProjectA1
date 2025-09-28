@@ -137,7 +137,7 @@
      <div class="content">
     <div class="card-container">
         <%for(let list of allList){%>
-            <a href="/listings/<%=list._id%>" class="card" style="text-decoration: none; color: inherit;">
+            <a href="/listings/<%=list._id%>" class="card" data-location="<%=list.location%>" style="text-decoration: none; color: inherit;">
                 <img src="<%=list.image.url%>" class="card-img-top" alt="listing_Image">
                 <div class="card-img-overlay">abs</div>
                 <div class="card-body">
@@ -152,15 +152,38 @@
     </div>
   </div>
 <script>
-   let taxSwitch = document.getElementById("flexSwitchCheckDefault");
-   taxSwitch.addEventListener("click", () => {
-     let taxInfo = document.getElementsByClassName("tax-Info");
-     for (info of taxInfo) {
-        if(info.style.display != "inline") {
-            info.style.display = "inline";
-        } else {
-            info.style.display = "none";
-        }
-     }
-   });
+  // === Tax toggle ===
+  let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+  taxSwitch.addEventListener("click", () => {
+    let taxInfo = document.getElementsByClassName("tax-Info");
+    for (let info of taxInfo) {
+      if (info.style.display != "inline") {
+        info.style.display = "inline";
+      } else {
+        info.style.display = "none";
+      }
+    }
+  });
+
+  // === Search functionality ===
+    document.querySelector(".search").addEventListener("submit", function(e) {
+    e.preventDefault(); // stop page reload
+  });
+
+ let searchBar = document.getElementById("search-bar");
+
+searchBar.addEventListener("input", function () {
+  let query = searchBar.value.toLowerCase();
+  let cards = document.querySelectorAll(".card"); // get all rendered cards
+
+  cards.forEach(card => {
+    let location = card.getAttribute("data-location").toLowerCase();
+    if (location.includes(query)) {
+      card.style.display = "block"; // show matching card
+    } else {
+      card.style.display = "none"; // hide non-matching
+    }
+  });
+});
+
 </script>

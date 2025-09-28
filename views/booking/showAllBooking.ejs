@@ -1,0 +1,54 @@
+<% layout('/layouts/boilerplate') -%>
+
+    <script>
+        const list = <% - JSON.stringify(list) %>;
+
+    </script>
+
+    <main class="booking-page">
+
+        <% if (currUser) { %>
+            <% const allBookings=list.bookings; %>
+            <% if (allBookings.length> 0) { %>
+            <h5>Your Bookings for this Listing</h5>
+            <section class="my-bookings" style="margin-bottom:20px;">
+                <p>All Bookings
+                <p>
+                <table class="price-table" border="1"
+                    style="width:100%; border-collapse:collapse; text-align:center; justify-content: center;">
+                    <thead>
+                        <tr">
+                            <th>Check-in</th>
+                            <th>Check-out</th>
+                            <th>Night</th>
+                            <th>Action</th>
+                            </tr>
+                    </thead>
+                    <tbody>
+                        <% allBookings.forEach(b=> { %>
+                            <tr>
+                                <td>
+                                    <%= b.checkIn.toDateString() %>
+                                </td>
+                                <td>
+                                    <%= b.checkOut.toDateString() %>
+                                </td>
+                                <td>
+                                    <%= Math.ceil((b.checkOut - b.checkIn) / (1000 * 60 * 60 * 24)) %>
+                                </td>
+                                <td>
+                                    <form action="/listings/<%= list._id %>/owner/booking/<%= b._id %>?_method=DELETE"
+                                        method="POST">
+                                        <button type="submit" class="circular-btn"><i
+                                                class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+            </section>
+            <% } else { %>
+                <p style="color: gray;">You don’t have any bookings yet.</p>
+                <% } %>
+    <% } %>

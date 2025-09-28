@@ -1,11 +1,247 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h3>this is home route</h3>   
-</body>
-</html>
+<% layout('/layouts/boilerplate') -%>
+
+<main class="booking-page">
+
+    <!-- 1. Dates Section -->
+    <section class="dates-section">
+        <div class="dates-info">
+            <h2>Dates</h2>
+            <p>24-10-2025 to 26-10-2025</p>
+        </div>
+        <button class="edit-btn">Edit</button>
+    </section>
+
+    <!-- 2. Home Information -->
+    <section class="home-info">
+        <img src="https://res.cloudinary.com/dt6b1nild/image/upload/v1741355447/wanderlust_DEV/sntfgphmw7rdb8n0dja9.jpg" alt="Home Image" class="home-image">
+        <div class="home-text">
+            <h2>Modern villa in forest scenery of luxury house by mountain river</h2>
+            <p>Owned by <i>Owner Name</i></p>
+        </div>
+    </section>
+
+    <!-- 3. Price Details Section -->
+    <section class="price-details">
+        <h2>Your Total Price</h2>
+        <table class="price-table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>7 nights × ₹3,443</td>
+                    <td>₹10,850</td>
+                </tr>
+                <tr>
+                    <td>Taxes</td>
+                    <td>₹344</td>
+                </tr>
+                <tr class="total-row">
+                    <td>Total (INR)</td>
+                    <td>₹11,194</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <!-- 4. Payment Section -->
+
+     <section class="payment-section">
+        <div class="text-center mb-4">
+            <p class="text-gray-600 mb-2">
+                <i class="fas fa-shield-alt text-green-500 mr-1"></i>
+                Secure payment • Free cancellation
+            </p>
+        </div>
+        <button class="btn-primary">
+            <i class="fas fa-lock mr-2"></i>
+            Pay ₹27,194
+        </button>
+        <div class="payment-methods">
+            <i class="fab fa-cc-visa"></i>
+            <i class="fab fa-cc-mastercard"></i>
+            <i class="fab fa-paypal"></i>
+            <i class="fas fa-university"></i>
+        </div>
+    </section>
+
+</main>
+
+<style>
+/* General Page */
+.booking-page {
+    font-family: 'Arial', sans-serif;
+    background-color: #f3f4f6;
+    min-height: 100vh;
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+/* Section Card Styling */
+.booking-page section {
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+/* Dates Section */
+.dates-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dates-section h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.dates-section p {
+    margin: 5px 0 0 0;
+    color: #555;
+}
+
+.edit-btn {
+    background-color: #1d4ed8;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.edit-btn:hover {
+    background-color: #1e40af;
+}
+
+/* Home Information */
+.home-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.home-image {
+    width: 96px;  /* passport size */
+    height: 96px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.home-text h2 {
+    margin: 0;
+    font-size: 1.15rem;
+    color: #222;
+    line-height: 1.2;
+}
+
+.home-text p {
+    margin: 5px 0 0 0;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* Price Details */
+.price-details h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.price-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.price-table th, .price-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.price-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.total-row {
+    font-weight: bold;
+    background-color: #f9fafb;
+}
+
+.payment-section {
+        background: white;
+        border-radius: 16px;
+        padding: 24px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .payment-methods {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 16px;
+        font-size: 1.5rem;
+        color: #64748b;
+    }
+
+    .payment-methods i {
+        transition: color 0.3s ease;
+    }
+
+    .payment-methods .fa-cc-visa:hover { color: #1a365d; }
+    .payment-methods .fa-cc-mastercard:hover { color: #e53e3e; }
+    .payment-methods .fa-paypal:hover { color: #0070ba; }
+    .payment-methods .fa-university:hover { color: #2d3748; }
+
+    @media (max-width: 768px) {
+        .booking-page {
+            padding: 1rem;
+        }
+        
+        .card {
+            padding: 16px;
+        }
+
+        .room-image {
+            width: 100%;
+            height: 200px;
+        }
+    }
+
+.btn-primary {
+        width: 100%;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 16px 24px;
+        border-radius: 12px;
+        font-size: 1.125rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+
+</style>

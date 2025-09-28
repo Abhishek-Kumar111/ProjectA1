@@ -12,14 +12,16 @@ const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require('./utils/ExpressError');
 
 
+
 //controller
 const listingController = require("./controller/listing.js");
 const reviewsController = require("./controller/reviews.js");
+const bookingController = require("./controller/booking.js");
 
 //passport
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const User = require("./Model/user.js");
+const User = require("./models/user.js");
 const { isLoggedIn, isOwner, validateReviews, validateListing ,isReviewAuthor} = require("./middleware.js");
 
 //use of ejs-mate (for boilar-plate) 
@@ -33,6 +35,8 @@ const upload = multer({ storage });
 
 //use of static file(css)
 app.use(express.static(path.join(__dirname, "PUBLIC")));
+app.use('/flatpickr', express.static(__dirname + '/node_modules/flatpickr'));
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.urlencoded({ extended: true }));
@@ -116,9 +120,19 @@ app.get("/listings/:id/edit", isLoggedIn, wrapAsync(listingController.editForm))
 app.patch("/listings/:id", isLoggedIn, isOwner, upload.single('Listing[image]'), wrapAsync(listingController.updateListing));
 app.delete("/listings/:id", isLoggedIn, isOwner, wrapAsync(listingController.deleteListing));
 
+//booking routes
+app.get("/listings/:id/booking",isLoggedIn, wrapAsync(bookingController.showBooking));
+app.get("/listings/:id/allBooking",isLoggedIn, wrapAsync(bookingController.showAllBooking));
+//create booking
+app.post("/listings/:id/booking",isLoggedIn, wrapAsync(bookingController.createBooking));
+app.delete("/listings/:id/booking/:bookingId", isLoggedIn,wrapAsync(bookingController.deleteBooking)); 
+app.delete("/listings/:id/owner/booking/:bookingId", isLoggedIn,wrapAsync(bookingController.deleteBookingByOwner)); 
+
 // Reviews Routes
 app.post("/listings/:id/reviews", isLoggedIn, validateReviews, wrapAsync(reviewsController.reviewListing));
 app.delete("/listings/:id/reviews/:revId", isLoggedIn, isReviewAuthor, wrapAsync(reviewsController.deleteReview));
+
+
 
 // Fixed Catch-All Route (404 Handler)
 app.all("*", (req, res, next) => {
