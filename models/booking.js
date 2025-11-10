@@ -6,6 +6,9 @@ const bookingSchema = new mongoose.Schema({
   checkIn: Date,
   checkOut: Date,
   guests: Number,
+  totalPrice: Number,
+  // Phone number provided and verified at booking time (E.164 recommended)
+  phone: { type: String },
   status: { type: String, enum: ["pending","confirmed","cancelled"], default: "pending" },
   createdAt: { type: Date, default: Date.now }
 });

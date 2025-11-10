@@ -1,9 +1,6 @@
 <% layout('/layouts/boilerplate') -%>
 
-    <script>
-        const list = <% - JSON.stringify(list) %>;
-
-    </script>
+    <div id="all-bookings-meta" data-list="<%- encodeURIComponent(JSON.stringify(list)) %>"></div>
 
     <main class="booking-page">
 
@@ -21,6 +18,7 @@
                             <th>Check-in</th>
                             <th>Check-out</th>
                             <th>Night</th>
+                            <th>Mobile</th>
                             <th>Action</th>
                             </tr>
                     </thead>
@@ -37,10 +35,11 @@
                                     <%= Math.ceil((b.checkOut - b.checkIn) / (1000 * 60 * 60 * 24)) %>
                                 </td>
                                 <td>
-                                    <form action="/listings/<%= list._id %>/owner/booking/<%= b._id %>?_method=DELETE"
-                                        method="POST">
-                                        <button type="submit" class="circular-btn"><i
-                                                class="fa-solid fa-trash"></i></button>
+                                    <%= b.phone || '-' %>
+                                </td>
+                                <td>
+                                    <form action="/listings/<%= list._id %>/allBooking/<%= b._id %>?_method=DELETE" method="POST">
+                                        <button type="submit" class="circular-btn"><i class="fa-solid fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>

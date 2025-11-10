@@ -1,208 +1,499 @@
 <% layout('/layouts/boilerplate') -%>
 
-    <script>
-        const list = <%- JSON.stringify(list) %>;
-           
-    </script>
-    
-    <link rel="stylesheet" href="/flatpickr/dist/flatpickr.min.css">
-    <main class="booking-page">
+<link rel="stylesheet" href="/flatpickr/dist/flatpickr.min.css">
 
-        <% if (currUser) { %>
+<main class="booking-page">
 
-            <% const myBookings=list.bookings.filter(b=>
-                b.userId && b.userId.toString() === currUser._id.toString()
-                ); %>
+    <% if (currUser) { %>
+        <% const myBookings = list.bookings.filter(b =>
+            b.userId && b.userId.toString() === currUser._id.toString()
+        ); %>
 
+        <% if (myBookings.length > 0) { %>
+            <h5>Your Bookings for this Listing</h5>
+            <section class="my-bookings" style="margin-bottom:20px;">
+                <table class="price-table" border="1" style="width:100%; border-collapse:collapse; text-align:center;">
+                    <thead>
+                        <tr>
+                            <th>Check-in</th>
+                            <th>Check-out</th>
+                            <th>Night</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% myBookings.forEach(b => { %>
+                            <tr>
+                                <td><%= b.checkIn.toDateString() %></td>
+                                <td><%= b.checkOut.toDateString() %></td>
+                                <td><%= Math.ceil((b.checkOut - b.checkIn) / (1000 * 60 * 60 * 24)) %></td>
+                                <td>
+                                    <form action="/listings/<%= list._id %>/booking/<%= b._id %>?_method=DELETE" method="POST">
+                                        <button type="submit" class="circular-btn">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </section>
+        <% } else { %>
+            <p style="color: gray;">You don’t have any bookings yet.</p>
+        <% } %>
+    <% } %>
 
-                <% if (myBookings.length> 0) { %>
-                    <h5>Your Bookings for this Listing</h5>
-                    <section class="my-bookings" style="margin-bottom:20px;">
-                        <p>My Bookings
-                        <p>
-                        <table class="price-table" border="1"
-                            style="width:100%; border-collapse:collapse; text-align:center; justify-content: center;">
-                            <thead>
-                                <tr>
-                                    <th>Check-in</th>
-                                    <th>Check-out</th>
-                                    <th>Night</th>
-                                    <th>Action</th>
-                                    </tr>
-                            </thead>
-                            <tbody>
-                                <% myBookings .forEach(b=> { %>
-                                    <tr>
-                                        <td>
-                                            <%= b.checkIn.toDateString() %>
-                                        </td>
-                                        <td>
-                                            <%= b.checkOut.toDateString() %>
-                                        </td>
-                                        <td>
-                                            <%= Math.ceil((b.checkOut - b.checkIn) / (1000 * 60 * 60 * 24)) %>
-                                        </td>
-                                        <td>
-                                            <form action="/listings/<%= list._id %>/booking/<%= b._id %>?_method=DELETE"
-                                                method="POST">
-                                                <button type="submit" class="circular-btn"><i
-                                                        class="fa-solid fa-trash"></i></button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <% }) %>
-                            </tbody>
-                        </table>
-                    </section>
-                    <% } else { %>
-                        <p style="color: gray;">You don’t have any bookings yet.</p>
-                        <% } %>
-                            <% } %>
+    <!-- Booking Form -->
+    <h4 style="margin-bottom:15px;">Book your stay</h4>
+       <div id="bookingForm">
+        <div class="booking-box"
+            style="border:1px solid #ccc; padding:15px; border-radius:8px; margin-top:15px; display:flex; flex-direction:column; gap:15px;">
 
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label for="checkIn" style="font-size:14px; font-weight:bold;">Check-in</label>
+                    <input type="text" name="checkIn" id="checkIn" placeholder="Add date" class="form-control">
+                </div>
+                <div style="flex:1;">
+                    <label for="checkOut" style="font-size:14px; font-weight:bold;">Check-out</label>
+                    <input type="text" name="checkOut" id="checkOut" placeholder="Add date" class="form-control">
+                </div>
+            </div>
 
-                                <!-- Booking Box -->
-                                <h4 style="margin-bottom:15px;">Book your stay</h4>
-                                <form action="/listings/<%=list._id%>/booking" id="bookingForm" method="post">
-                                    <div class="booking-box"
-                                        style="border:1px solid #ccc; padding:15px; border-radius:8px; margin-top:15px; display: flex; justify-content:space-between;">
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;">
+                    <label for="guests" style="font-size:14px; font-weight:bold;">Guests</label>
+                    <input type="number" id="guests" name="guests" min="1" max="5" value="1" class="form-control">
+                </div>
+                <div style="flex:1;">
+                    <label for="phone" style="font-size:14px; font-weight:bold;">Mobile number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="e.g. +91XXXXXXXXXX" class="form-control">
+                </div>
+            </div>
+        </div>
 
+        <!-- Home Info -->
+        <section class="home-info">
+            <img src="<%= list.image.url %>" alt="Home Image" class="home-image">
+            <div class="home-text">
+                <h2>Modern villa in forest scenery of luxury house by mountain river</h2>
+                <p>Owned by <i>Owner Name</i></p>
+            </div>
+        </section>
 
-                                        <div style="display:flex; gap:10px; margin-bottom:10px;">
-                                            <div style="flex:1;">
-                                                <label for="checkIn"
-                                                    style="font-size:14px; font-weight:bold;">Check-in</label>
-                                                <input type="text" name="checkIn" id="checkIn" placeholder="Add date"
-                                                    class="form-control">
-                                            </div>
-                                            <div style="flex:1;">
-                                                <label for="checkOut"
-                                                    style="font-size:14px; font-weight:bold;">Check-out</label>
-                                                <input type="text" name="checkOut" id="checkOut" placeholder="Add date"
-                                                    class="form-control">
-                                            </div>
-                                        </div>
+        <!-- Price Details -->
+        <section class="price-details">
+            <h2>Your Total Price</h2>
+            <table class="price-table">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Amount (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td id="price-nights">0 night x ₹ <%= list.price.toLocaleString('en-IN') %></td>
+                        <td id="price-base">₹0</td>
+                    </tr>
+                    <tr>
+                        <td>Taxes 18%</td>
+                        <td id="price-tax">₹0</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td>Total (INR)</td>
+                        <td id="price-total">₹0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
 
-                                        <div style="display:flex; gap:10px; margin-bottom:15px;">
-                                            <div style="flex:1;">
-                                                <label for="guests"
-                                                    style="font-size:14px; font-weight:bold;">Guests</label>
-                                                <input type="number" id="guests"name="guests" min="1" max="5" value="1"
-                                                    class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
+       <!-- reCAPTCHA container for Firebase (invisible) -->
+       <div id="recaptcha-container" style="margin-top:10px;"></div>
+       <button class="btn-primary" id="checkout-button">Confirm & pay</button>
 
-                                    <!-- 2. Home Information -->
-                                    <section class="home-info">
-                                        <img src="<%= list.image.url %>" alt="Home Image" class="home-image">
-                                        <div class="home-text">
-                                            <h2>Modern villa in forest scenery of luxury house by mountain river</h2>
-                                            <p>Owned by <i>Owner Name</i></p>
-                                        </div>
-                                    </section>
+       <!-- Phone Entry Modal -->
+       <div id="phone-modal" class="modal-overlay">
+           <div class="modal-card">
+               <h3 class="modal-title">Verify your mobile number</h3>
+               <p class="modal-sub">Enter your mobile number with country code to receive an OTP.</p>
+               <input type="tel" id="phone-intl" class="form-control" placeholder="e.g. +91 98765 43210" />
+               <div class="modal-actions">
+                   <button id="phone-cancel" class="btn btn-secondary">Cancel</button>
+                   <button id="phone-send-otp" class="btn btn-primary">Send OTP</button>
+               </div>
+           </div>
+       </div>
 
-                                    <!-- 3. Price Details Section -->
+       <!-- OTP Entry Modal -->
+       <div id="otp-modal" class="modal-overlay">
+           <div class="modal-card">
+               <h3 class="modal-title">Enter OTP</h3>
+               <p id="otp-info" class="modal-sub">We have sent an OTP to your number.</p>
+               <input type="text" id="otp-code" class="form-control" placeholder="Enter 6-digit OTP" maxlength="6" style="letter-spacing:3px; text-align:center; font-size:18px;" />
+               <div class="modal-actions">
+                   <button id="otp-back" class="btn btn-secondary">Back</button>
+                   <button id="otp-verify" class="btn btn-primary">Verify</button>
+               </div>
+           </div>
+       </div>
+        <div id="booking-data" 
+             data-user-id="<%= currUser ? currUser._id : '' %>" 
+             data-listing-id="<%= list ? list._id : '' %>" 
+             data-price="<%= list ? list.price : 0 %>"
+             data-bookings="<%- encodeURIComponent(JSON.stringify(list.bookings)) %>"></div>
+    </div>
 
-                                    <!-- 3. Price Details Section -->
-                                    <section class="price-details">
-                                        <h2>Your Total Price</h2>
-                                        <table class="price-table">
-                                            <thead>
-                                                <tr>
-                                                    <th>Description</th>
-                                                    <th>Amount (₹)</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td id="price-nights">0 night x ₹ <%=
-                                                            list.price.toLocaleString('en-IN') %>
-                                                    </td>
-                                                    <td id="price-base">₹0</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Taxes 18%</td>
-                                                    <td id="price-tax">₹0</td>
-                                                </tr>
-                                                <tr class="total-row">
-                                                    <td>Total (INR)</td>
-                                                    <td id="price-total">₹0</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </section>
+</main>
 
+<!-- Flatpickr JS -->
+<script src="/flatpickr/dist/flatpickr.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<!-- Firebase SDKs (v9 modular) will be imported via ES module below -->
+<!-- Country code picker -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 
-                                    <button class="btn-primary" type="submit">
-                                        Confirm
-                                    </button>
-                        
-                                </form>
-    </main>
+<!-- Booking Logic -->
+<script>
+    // ===== Firebase Init (env provided on server) =====
+    // Prefer a single JSON blob if provided (copy from Firebase console Web app config)
+    // .env: FIREBASE_WEB_CONFIG={"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}
+    let firebaseConfig = null;
+    try {
+        const __configJson = "<%= process.env.FIREBASE_WEB_CONFIG || '' %>";
+        if (__configJson && __configJson !== 'undefined' && __configJson !== 'null') {
+            firebaseConfig = JSON.parse(__configJson);
+        }
+    } catch (e) {
+        // ignore parse errors and fall back to individual keys
+        firebaseConfig = null;
+    }
 
-    <!-- Flatpickr JS -->
-    <script src="/flatpickr/dist/flatpickr.min.js"></script>
-    <script>
-        const pricePerNight = <%= list.price%>;
+    if (!firebaseConfig) {
+        firebaseConfig = {
+            apiKey: "<%= process.env.FIREBASE_API_KEY %>",
+            authDomain: "<%= process.env.FIREBASE_AUTH_DOMAIN %>",
+            projectId: "<%= process.env.FIREBASE_PROJECT_ID %>",
+            storageBucket: "<%= process.env.FIREBASE_STORAGE_BUCKET %>",
+            messagingSenderId: "<%= process.env.FIREBASE_MESSAGING_SENDER_ID %>",
+            appId: "<%= process.env.FIREBASE_APP_ID %>"
+        };
+    }
+    // Validate config early to provide clear guidance
+    const missingFirebaseKeys = Object.entries(firebaseConfig)
+        .filter(([k,v]) => !v || v === 'undefined' || v === 'null')
+        .map(([k]) => k);
+    if (missingFirebaseKeys.length) {
+        console.error('Missing Firebase config keys:', missingFirebaseKeys.join(', '));
+        alert('OTP temporarily unavailable: missing Firebase configuration (' + missingFirebaseKeys.join(', ') + '). Please set these in your .env and restart the server.');
+    } else {
+        window.firebaseConfig = firebaseConfig; // used by v9 module init
+    }
 
-        function calculatePrice() {
-            const checkIn = document.getElementById("checkIn").value;
-            const checkOut = document.getElementById("checkOut").value;
+    let otpVerified = false;
+    let verifiedPhone = null;
+    let confirmationResultRef = null;
+    let recaptchaVerifierRef = null;
+    let phoneIntl = null;
+    let __auth = null;
 
-            if (checkIn && checkOut) {
-                const inDate = new Date(checkIn);
-                const outDate = new Date(checkOut);
+    function getOrCreateRecaptcha() {
+        if (recaptchaVerifierRef) return recaptchaVerifierRef;
+        if (!__auth) throw new Error('Auth not initialized');
+        // v9 modular: invisible v2 reCAPTCHA (no UI)
+        recaptchaVerifierRef = new window.__FirebaseAuth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' }, __auth);
+        recaptchaVerifierRef.render();
+        return recaptchaVerifierRef;
+    }
 
-                // Calculate number of nights
-                const diffTime = outDate - inDate;
-                const nights = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-                if (nights > 0) {
-                    const basePrice = nights * pricePerNight;
-                    const tax = basePrice * 0.18;
-                    const total = basePrice + tax;
-
-                    // Update DOM
-                    document.getElementById("price-nights").innerText =
-                        `${nights} night x ₹ ${pricePerNight.toLocaleString('en-IN')}`;
-                    document.getElementById("price-base").innerText =
-                        `₹${basePrice.toLocaleString('en-IN')}`;
-                    document.getElementById("price-tax").innerText =
-                        `₹${tax.toLocaleString('en-IN')}`;
-                    document.getElementById("price-total").innerText =
-                        `₹${total.toLocaleString('en-IN')}`;
-                }
+    async function startPhoneVerification(phoneNumber) {
+        const appVerifier = getOrCreateRecaptcha();
+        try {
+            confirmationResultRef = await window.__FirebaseAuth.signInWithPhoneNumber(__auth, phoneNumber, appVerifier);
+            // Switch UI to OTP modal
+            document.getElementById('otp-info').innerText = 'We have sent an OTP to ' + phoneNumber + '.';
+            toggleOtpModal(true);
+            return true; // We only started, actual verification happens on Verify button
+        } catch (err) {
+            const message = (err && err.message) ? err.message : String(err);
+            if (message.includes('auth/billing-not-enabled')) {
+                alert('Phone Auth is set to reCAPTCHA Enterprise. Either enable billing (Blaze) or switch to reCAPTCHA v2/Play Integrity in Firebase Auth settings.');
+            } else if (message.includes('auth/configuration-not-found')) {
+                alert('Phone Auth not fully configured. Enable Phone provider and add your domain in Authorized domains.');
+            } else if (message.includes('auth/network-request-failed')) {
+                alert('Network error during OTP. Check ad-blockers or connectivity.');
+            } else {
+                alert('OTP start failed: ' + message);
             }
+            return false;
+        }
+    }
+
+    function togglePhoneModal(show) {
+        const el = document.getElementById('phone-modal');
+        el.style.display = show ? 'flex' : 'none';
+        if (show && !phoneIntl) {
+            const input = document.getElementById('phone-intl');
+            phoneIntl = window.intlTelInput(input, {
+                initialCountry: 'in',
+                separateDialCode: true,
+                utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js'
+            });
+        }
+    }
+
+    function toggleOtpModal(show) {
+        const el = document.getElementById('otp-modal');
+        el.style.display = show ? 'flex' : 'none';
+        if (show) {
+            const otp = document.getElementById('otp-code');
+            otp.value = '';
+            setTimeout(() => otp.focus(), 50);
+        }
+    }
+
+    async function performCheckout() {
+        const checkInDate = document.getElementById("checkIn").value;
+        const checkOutDate = document.getElementById("checkOut").value;
+
+        // Add client-side validation before sending
+        if (!checkInDate || !checkOutDate) {
+            alert("Please select both a check-in and check-out date.");
+            return;
         }
 
-        // Recalculate whenever dates change
-        document.getElementById("checkIn").addEventListener("change", calculatePrice);
-        document.getElementById("checkOut").addEventListener("change", calculatePrice);
+        if (new Date(checkOutDate) <= new Date(checkInDate)) {
+             alert("Check-out date must be after the check-in date.");
+             return;
+        }
 
-        const bookedRanges = <%- JSON.stringify(list.bookings.map(b => {
+        const data = {
+            userId: CURRENT_USER_ID,
+            listingId: LISTING_ID,
+            checkIn: checkInDate,
+            checkOut: checkOutDate,
+            guests: parseInt(document.getElementById("guests").value),
+            pricePerNight: PRICE_PER_NIGHT,
+            phone: verifiedPhone || document.getElementById('phone').value || ''
+        };
+
+        try {
+            const response = await fetch('/book-and-pay', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                credentials: 'same-origin',
+                redirect: 'follow',
+                body: JSON.stringify(data)
+            });
+
+            if (response.redirected) {
+                window.location.href = response.url;
+                return;
+            }
+
+            if (!response.ok) {
+                let message = `HTTP error! Status: ${response.status}`;
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('application/json')) {
+                    const errorData = await response.json();
+                    message = errorData.error || message;
+                } else {
+                    const text = await response.text();
+                    message = text || message;
+                }
+                throw new Error(message);
+            }
+
+            const session = await response.json();
+            const stripePublishableKey = "<%= process.env.STRIPE_PUBLISHABLE_KEY || 'pk_test_your_publishable_key_here' %>";
+            if (stripePublishableKey === 'pk_test_your_publishable_key_here') {
+                alert('Stripe is not configured. Please add your Stripe publishable key to the environment variables.');
+                return;
+            }
+            const stripe = Stripe(stripePublishableKey);
+            const result = await stripe.redirectToCheckout({ sessionId: session.id });
+
+            if (result.error) {
+                alert(result.error.message);
+            }
+        } catch (err) {
+            console.error("Error:", err);
+            alert("Something went wrong: " + err.message);
+        }
+    }
+
+
+    // Read server-provided values from data attributes
+    const __bookingMeta = document.getElementById('booking-data');
+    const CURRENT_USER_ID = __bookingMeta ? __bookingMeta.dataset.userId : "";
+    const LISTING_ID = __bookingMeta ? __bookingMeta.dataset.listingId : "";
+    const PRICE_PER_NIGHT = __bookingMeta ? parseFloat(__bookingMeta.dataset.price || "0") : 0;
+
+    // Booked ranges from DB
+    const bookedRanges = (function() {
+        const rawJson = __bookingMeta ? (__bookingMeta.dataset.bookings || "%5B%5D") : "%5B%5D";
+        const raw = JSON.parse(decodeURIComponent(rawJson));
+        return raw.map(b => {
             const from = new Date(b.checkIn);
             const to = new Date(b.checkOut);
-
-            // Subtract one day from checkout to make it exclusive
             to.setDate(to.getDate() - 1);
-
-            // Important: set hours to 0 to avoid timezone issues
-            from.setHours(0, 0, 0, 0);
-            to.setHours(0, 0, 0, 0);
-
+            from.setHours(0,0,0,0);
+            to.setHours(0,0,0,0);
             return { from, to };
-        })) %>;
-
-
-        flatpickr("#checkIn", {
-            dateFormat: "Y-m-d",
-            minDate: "today",
-            disable: bookedRanges
         });
+    })();
 
-        flatpickr("#checkOut", {
-            dateFormat: "Y-m-d",
-            minDate: "today",
-            disable: bookedRanges
-        });
-    </script>
+    let checkOutPicker;
+
+    // ---- Check-in Picker ----
+    const checkInPicker = flatpickr("#checkIn", {
+        minDate: "today",               // today ke baad hi allow
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        disable: bookedRanges,          // already booked disable
+        onChange: function(selectedDates) {
+            if (checkOutPicker && selectedDates.length) {
+                // check-out min date = check-in ke agle din
+                checkOutPicker.set("minDate", new Date(selectedDates[0]).fp_incr(1));
+            }
+        }
+    });
+
+    // ---- Check-out Picker ----
+    checkOutPicker = flatpickr("#checkOut", {
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+        disable: bookedRanges,   // booked dates disable
+        onOpen: function(selectedDates, dateStr, instance) {
+            if (!checkInPicker.selectedDates.length) {
+                instance.input.disabled = true;
+                instance.input.placeholder = "Select check-in first";
+            } else {
+                instance.input.disabled = false;
+            }
+        },
+        onChange: function() {
+        calculatePrice(); 
+    }
+    });
+    document.getElementById("checkIn").addEventListener("change", function() {
+        if(this.value) {
+            const checkoutInput = document.getElementById("checkOut");
+            checkoutInput.disabled = false;
+            checkoutInput.placeholder = "Add date";
+            checkOutPicker.open(); // Open the calendar for the user
+        }
+    });
+
+    const checkoutButton = document.getElementById('checkout-button');
+    checkoutButton.addEventListener('click', async (e) => {
+        e.preventDefault();
+        if (!otpVerified) {
+            togglePhoneModal(true);
+            return;
+        }
+        await performCheckout();
+    });
+
+    // Phone modal buttons
+    document.getElementById('phone-cancel').addEventListener('click', function(){
+        togglePhoneModal(false);
+    });
+    document.getElementById('phone-send-otp').addEventListener('click', async function(){
+        const input = document.getElementById('phone-intl');
+        let number = (input.value || '').trim();
+        try {
+            if (phoneIntl) {
+                // Read E.164 from plugin or build from dial code + digits
+                const e164 = phoneIntl.getNumber();
+                if (e164 && e164.startsWith('+')) {
+                    number = e164;
+                } else {
+                    const cd = phoneIntl.getSelectedCountryData ? phoneIntl.getSelectedCountryData() : null;
+                    const digits = (input.value || '').replace(/\D/g, '');
+                    const dial = cd && cd.dialCode ? cd.dialCode : '';
+                    number = dial ? ('+' + dial + digits) : digits;
+                }
+                // Allow Firebase test numbers even if lib validation fails
+                const isLikelyTest = number === '+11234567890' || number === '+911234567890' || number === '+19876543210';
+                if (!isLikelyTest && phoneIntl.isValidNumber && !phoneIntl.isValidNumber()) {
+                    alert('Please enter a valid mobile number or use a configured Firebase test number.');
+                    return;
+                }
+            }
+            if (!number || !number.startsWith('+')) {
+                alert('Please enter your mobile number with country code.');
+                return;
+            }
+            const started = await startPhoneVerification(number);
+            if (started) {
+                // Keep the composed E.164 for final submit
+                verifiedPhone = number;
+                togglePhoneModal(false);
+            }
+        } catch (e) {
+            alert('Unable to send OTP: ' + ((e && e.message) ? e.message : String(e)));
+        }
+    });
+
+    // OTP modal buttons
+    document.getElementById('otp-back').addEventListener('click', function(){
+        toggleOtpModal(false);
+        // If user wants to edit phone, re-open phone modal
+        togglePhoneModal(true);
+    });
+    document.getElementById('otp-verify').addEventListener('click', async function(){
+        const code = (document.getElementById('otp-code').value || '').trim();
+        if (!code) {
+            alert('Please enter the OTP.');
+            return;
+        }
+        try {
+            if (!confirmationResultRef) {
+                alert('OTP session expired. Please request a new OTP.');
+                return;
+            }
+            await confirmationResultRef.confirm(code);
+            otpVerified = true;
+            try { await window.__FirebaseAuth.signOut(__auth); } catch (_) {}
+            toggleOtpModal(false);
+            await performCheckout();
+        } catch (_) {
+            alert('Invalid OTP. Please try again.');
+        }
+    });
+
+    // Initialize Firebase (v9 modular) in a module so we can import symbols cleanly
+</script>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js';
+    import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, signOut, useDeviceLanguage } from 'https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js';
+
+    // Expose constructors/functions we need to the non-module script scope via window
+    window.__FirebaseAuth = {
+        RecaptchaVerifier,
+        signInWithPhoneNumber,
+        signOut
+    };
+
+    try {
+        const app = initializeApp(window.firebaseConfig || {});
+        const auth = getAuth(app);
+        try { useDeviceLanguage(auth); } catch (_) {}
+        window.__FirebaseAuth = { RecaptchaVerifier, signInWithPhoneNumber, signOut };
+        window.__auth = auth;
+        __auth = auth; // make available to non-module scope
+    } catch (e) {
+        console.error('Firebase init (v9) failed:', e);
+        alert('OTP temporarily unavailable: Firebase failed to initialize. Check env keys and authorized domains.');
+    }
+</script>
+
+<script src="/js/booking.js"></script>
